@@ -131,7 +131,7 @@ func writeStringToFile(filepath, content string) {
 func main() {
 	flag.Parse()
 	var m string
-	for i := 0; i < *numberFlag; i++ {
+	for i := 1; i < *numberFlag; i++ {
 		s := GetRandomName(*lengthFlag, *firstNameFlag)
 		fmt.Println(s)
 		if i%10 != 0 {
