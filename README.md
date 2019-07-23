@@ -9,6 +9,8 @@
 ## 运行方式 ：
 1. 双击运行
 2. cmd : `name.exe`  参数 ：`-number 100 (需要多少个名字,默认100) -length 3 (几位的名字,默认3位) -first 李 (默认 周)`
-3. 如果在当前目录下有`shici.txt`文件存在,将使用里面的内容
+![cmd_exp](./cmd_exp.png)
+3. 如果在当前目录下有`shici.txt`文件存在,将使用里面的内容,下面是示范,不需要删除中文符号
+![shici.txt文件内容示范](./shici_exp.png)
 ## 运行结果
 会在当前目录生成 `name.txt`
