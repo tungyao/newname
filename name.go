@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"math/rand"
-	"os"
 	"regexp"
 	"sync"
 	"time"
@@ -50,7 +49,8 @@ func GetRandomName(n int, first string) (name string) {
 	} else if n == 4 {
 		lastName := lastNames[GetRandomInt(0, len(lastNames)-1)]
 		lastNamee := lastNames[GetRandomInt(0, len(lastNames)-1)]
-		return familyName + lastName + lastNamee
+		lastNameee := lastNames[GetRandomInt(0, len(lastNames)-1)]
+		return familyName + lastName + lastNamee + lastNameee
 	}
 	return familyName
 }
@@ -113,24 +113,16 @@ var (
 )
 
 func writeStringToFile(filepath, content string) {
-	f, err := os.Create(filepath)
-	if err != nil {
-		fmt.Println("错误")
-	}
-
-	defer f.Close()
-	n2, err := f.Write([]byte(content))
-	if err != nil {
-		fmt.Println("错误")
-	}
-	if n2 != 0 {
+	if ioutil.WriteFile(filepath, []byte(content), 0644) == nil {
 		fmt.Println("写出完成：name.txt")
+	} else {
+		fmt.Println("写出错误")
 	}
-	fmt.Scanln()
 }
 func main() {
 	flag.Parse()
 	var m string
+	var _startTime int64 = time.Now().UnixNano() / 1e6
 	for i := 1; i < *numberFlag; i++ {
 		s := GetRandomName(*lengthFlag, *firstNameFlag)
 		fmt.Println(s)
@@ -142,4 +134,5 @@ func main() {
 
 	}
 	writeStringToFile("./name.txt", m)
+	fmt.Println("总共耗时: ", time.Now().UnixNano()/1e6-_startTime, " 毫秒")
 }
