@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"regexp"
+	"strings"
 	"sync"
 	"time"
 )
@@ -37,25 +38,26 @@ var (
 	lastNames []string
 )
 
-func GetRandomName(n int, first string) (name string) {
+func GetRandomName(n int, first string) *string {
 	familyName := first
+	var s string
 	if n == 3 {
 		middleName := lastNames[GetRandomInt(0, len(lastNames)-1)]
 		lastName := lastNames[GetRandomInt(0, len(lastNames)-1)]
-		return familyName + middleName + lastName
+		s += familyName + middleName + lastName
 	} else if n == 2 {
 		lastName := lastNames[GetRandomInt(0, len(lastNames)-1)]
-		return familyName + lastName
+		s += familyName + lastName
 	} else if n == 4 {
 		lastName := lastNames[GetRandomInt(0, len(lastNames)-1)]
 		lastNamee := lastNames[GetRandomInt(0, len(lastNames)-1)]
 		lastNameee := lastNames[GetRandomInt(0, len(lastNames)-1)]
-		return familyName + lastName + lastNamee + lastNameee
+		s += familyName + lastName + lastNamee + lastNameee
 	}
-	return familyName
+	return &s
 }
 func init() {
-	data, err := ioutil.ReadFile("shici.txt")
+	data, err := ioutil.ReadFile("./shici.txt")
 	var get string
 	if err != nil {
 		fmt.Println("File reading error", err)
@@ -65,7 +67,7 @@ func init() {
 
 	} else {
 		get = string(data)
-		reg := regexp.MustCompile("\\s*\\pP*")
+		reg := regexp.MustCompile(`\s*\pP*`)
 		get = reg.ReplaceAllString(get, "")
 		for _, s := range get {
 			lastNames = append(lastNames, string(s))
@@ -119,20 +121,35 @@ func writeStringToFile(filepath, content string) {
 		fmt.Println("写出错误")
 	}
 }
+
+var wg sync.WaitGroup
+
+func syncAdd(s *strings.Builder, locks *sync.Mutex) {
+	for i := 1; i < *numberFlag/1; i++ {
+		locks.Lock()
+		ss := *(GetRandomName(*lengthFlag, *firstNameFlag))
+		if i%10 != 0 {
+			s.WriteString(ss + "\t")
+		} else {
+			s.WriteString(ss + "\n")
+		}
+		locks.Unlock()
+	}
+	wg.Done()
+}
+
 func main() {
 	flag.Parse()
-	var m string
+	var m strings.Builder
+	lock := &sync.Mutex{}
 	var _startTime int64 = time.Now().UnixNano() / 1e6
-	for i := 1; i < *numberFlag; i++ {
-		s := GetRandomName(*lengthFlag, *firstNameFlag)
-		fmt.Println(s)
-		if i%10 != 0 {
-			m += s + "\t"
-		} else {
-			m += "\n"
-		}
-
-	}
-	writeStringToFile("./name.txt", m)
+	wg.Add(1)
+	//go syncAdd(&m, lock)
+	//go syncAdd(&m, lock)
+	//go syncAdd(&m, lock)
+	go syncAdd(&m, lock)
+	wg.Wait()
+	//fmt.Println(m.String())
+	writeStringToFile("./name.txt", m.String())
 	fmt.Println("总共耗时: ", time.Now().UnixNano()/1e6-_startTime, " 毫秒")
 }
