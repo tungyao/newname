@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div >
+    姓：<input type="text" name="first" id="in1">
+    姓名长度：<input type="text" name="number" id="in2">
+    生多少个：<input type="text" name="alln" id="in3">
+    <input type="button" value="提交" onclick="submit()">
+</div>
+</body>
+</html>
+<script>
+    function submit() {
+        let in1 = document.getElementById("in1").value;
+        let in2 = document.getElementById("in2").value;
+        let in3 = document.getElementById("in3").value;
+        Request.post("/newname",{first:in1,number:in2,alln:in3}).then((e)=>{
+            console.log(e);
+            window.open(e);
+        })
+    }
+    class Request {
+        static _root = "";
+        static get(url,data){
+            let t = this;
+            return new Promise(function(resolve, reject) {
+                let XHR = new XMLHttpRequest();
+                let u = t._root+url+"?";
+                for (let i in data){
+                    u+=`${i}=${data[i]}`;
+                }
+                XHR.open('GET', u, true);
+                XHR.setRequestHeader("Content-Type","application/json");
+                XHR.onreadystatechange = function() {
+                    if (XHR.readyState === 4) {
+                        if (XHR.status === 200) {
+                            try {
+                                let response = JSON.parse(XHR.responseText);
+                                resolve(response);
+                            } catch (e) {
+                                reject(e);
+                            }
+                        } else {
+                            reject(new Error(XHR.statusText));
+                        }
+                    }
+                };
+                XHR.send(data);
+            })
+        }
+        static post(url,data){
+            let t = this;
+            return new Promise(function(resolve, reject) {
+                let XHR = new XMLHttpRequest();
+                // let u = t._root+url+"?";
+                // for (let i in data){
+                //     u+=`${i}=${data[i]}`;
+                // }
+                XHR.open('POST', url, true);
+                XHR.setRequestHeader("Content-Type","application/json");
+                XHR.onreadystatechange = function() {
+                    if (XHR.readyState === 4) {
+                        if (XHR.status === 200) {
+                            try {
+                                // let response = JSON.parse(XHR.responseText);
+                                resolve(XHR.responseText);
+                            } catch (e) {
+                                reject(e);
+                            }
+                        } else {
+                            reject(new Error(XHR.statusText));
+                        }
+                    }
+                };
+                XHR.send(JSON.stringify(data));
+            })
+        }
+    }
+</script>

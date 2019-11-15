@@ -1,16 +1,116 @@
-package newname
+package main
 
 import (
+	"archive/zip"
 	"flag"
 	"fmt"
+	"io"
 	"io/ioutil"
+	"log"
 	"math/rand"
+	"net/http"
+	"os"
+	"path/filepath"
 	"regexp"
+	cedar "src/github.com/tungyao/cedar"
+	"src/github.com/tungyao/tjson"
+	"strconv"
 	"strings"
 	"sync"
 	"time"
 )
 
+func main() {
+	r := cedar.NewRouter()
+	r.Static("/static")
+	r.Get("/", func(writer http.ResponseWriter, request *http.Request) {
+		fs, err := os.OpenFile("./template/index.html", os.O_RDONLY, 0777)
+		if err != nil {
+			log.Println(err)
+		}
+		html, err := ioutil.ReadAll(fs)
+		if err != nil {
+			log.Println(err)
+		}
+		_, _ = writer.Write(html)
+	})
+	r.Post("/newname", func(writer http.ResponseWriter, request *http.Request) {
+		data := make([]byte, 1024)
+		nt, _ := request.Body.Read(data)
+		request.Body.Close()
+		t := tjson.Decode(data[:nt])
+		first := t["first"].(string)
+		number := t["number"].(string)
+		alln := "2000"
+		if len(t) > 2 {
+			alln = t["alln"].(string)
+		}
+		var m strings.Builder
+		n, _ := strconv.Atoi(number)
+		na, _ := strconv.Atoi(alln)
+		for i := 1; i < na; i++ {
+			ss := GetRandomName(n, first)
+			if i%10 != 0 {
+				m.WriteString(ss + "\t")
+			} else {
+				m.WriteString(ss + "\n")
+			}
+		}
+		tm := strconv.Itoa(int(time.Now().Unix())+rand.Int())
+		WriteStringToFileS("./static/temp/"+tm+"-name.txt", m.String())
+		err:=Zip("./static/temp/"+tm+"-name.txt","./static/temp/"+tm+"-name.zip")
+		if err !=nil {
+		    log.Println(err)
+		}
+		writer.Header().Set("content-type", "application/x-zip-compressed")
+		//writer.Header().Set("Content-Disposition","attachment; filename="+tm+"-name.txt")
+		_, _ = writer.Write([]byte("./static/temp/" + tm + "-name.zip"))
+	})
+	_ = r.Listening(":84", r)
+}
+func Zip(srcFile string, destZip string) error {
+	zipfile, err := os.Create(destZip)
+	if err != nil {
+		return err
+	}
+	defer zipfile.Close()
+
+	archive := zip.NewWriter(zipfile)
+	defer archive.Close()
+	filepath.Walk(srcFile, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		header, err := zip.FileInfoHeader(info)
+		if err != nil {
+			return err
+		}
+		header.Name = strings.TrimPrefix(path, filepath.Dir(srcFile) + "/")
+		// header.Name = path
+		if info.IsDir() {
+			header.Name += "/"
+		} else {
+			header.Method = zip.Deflate
+		}
+
+		writer, err := archive.CreateHeader(header)
+		if err != nil {
+			return err
+		}
+
+		if ! info.IsDir() {
+			file, err := os.Open(path)
+			if err != nil {
+				return err
+			}
+			defer file.Close()
+			_, err = io.Copy(writer, file)
+		}
+		return err
+	})
+
+	return err
+}
 var (
 	familyNames    = []string{"周"}
 	middleNamesMap = map[string][]string{}
@@ -38,7 +138,7 @@ var (
 	lastNames []string
 )
 
-func GetRandomName(n int, first string) *string {
+func GetRandomName(n int, first string) string {
 	familyName := first
 	var s string
 	if n == 3 {
@@ -54,7 +154,7 @@ func GetRandomName(n int, first string) *string {
 		lastNameee := lastNames[GetRandomInt(0, len(lastNames)-1)]
 		s += familyName + lastName + lastNamee + lastNameee
 	}
-	return &s
+	return s
 }
 func init() {
 	data, err := ioutil.ReadFile("./shici.txt")
@@ -73,14 +173,8 @@ func init() {
 			lastNames = append(lastNames, string(s))
 		}
 	}
-
-	// lastNames = DeleteRepeat(lastName)
 	for _, x := range familyNames {
-		if x != "周" {
-			middleNamesMap[x] = []string{"德", "惟", "守", "世", "令", "子", "伯", "师", "希", "与", "孟", "由", "宜", "顺", "元", "允", "宗", "仲", "士", "不", "善", "汝", "崇", "必", "良", "友", "季", "同"}
-		} else {
-			middleNamesMap[x] = []string{"宗", "的", "永", "其", "光"}
-		}
+		middleNamesMap[x] = []string{"德", "惟", "守", "世", "令", "子", "伯", "师", "希", "与", "孟", "由", "宜", "顺", "元", "允", "宗", "仲", "士", "不", "善", "汝", "崇", "必", "良", "友", "季", "同"}
 	}
 }
 
@@ -114,53 +208,14 @@ var (
 	firstNameFlag = flag.String("first", "周", "姓氏 : -first")
 )
 
-func WriteStringToFile(filepath, content string) {
-	if ioutil.WriteFile(filepath, []byte(content), 0644) == nil {
-		fmt.Println("写出完成：name.txt")
-	} else {
-		fmt.Println("写出错误")
+func WriteStringToFileS(filepath, content string) {
+	fs, err := os.OpenFile(filepath, os.O_CREATE|os.O_WRONLY, 0777)
+	if err != nil {
+		log.Println(err)
+	}
+	defer fs.Close()
+	_, err = fs.WriteString(content)
+	if err != nil {
+		log.Println(err)
 	}
 }
-
-var wg sync.WaitGroup
-
-func syncAdd(s *strings.Builder, locks *sync.Mutex) {
-	for i := 1; i < *numberFlag/1; i++ {
-		locks.Lock()
-		ss := *(GetRandomName(*lengthFlag, *firstNameFlag))
-		if i%10 != 0 {
-			s.WriteString(ss + "\t")
-		} else {
-			s.WriteString(ss + "\n")
-		}
-		locks.Unlock()
-	}
-	wg.Done()
-}
-func SyncAdd(s *strings.Builder, n int, first string, alln int) {
-	for i := 1; i < n; i++ {
-		ss := *(GetRandomName(alln, first))
-		if i%10 != 0 {
-			s.WriteString(ss + "\t")
-		} else {
-			s.WriteString(ss + "\n")
-		}
-	}
-}
-
-//
-//func main() {
-//	flag.Parse()
-//	var m strings.Builder
-//	lock := &sync.Mutex{}
-//	var _startTime int64 = time.Now().UnixNano() / 1e6
-//	wg.Add(1)
-//	//go syncAdd(&m, lock)
-//	//go syncAdd(&m, lock)
-//	//go syncAdd(&m, lock)
-//	go syncAdd(&m, lock)
-//	wg.Wait()
-//	//fmt.Println(m.String())
-//	writeStringToFile("./name.txt", m.String())
-//	fmt.Println("总共耗时: ", time.Now().UnixNano()/1e6-_startTime, " 毫秒")
-//}
