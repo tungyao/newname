@@ -1,15 +1,100 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>新名字（源自古诗词）</title>
 </head>
+<style>
+    @media screen and (max-width: 500px) {
+        .container {
+            width: 100%;
+        }
+
+        .container > .main {
+            /*width: 100%;*/
+            display: flex;
+            flex-flow: column nowrap;
+        }
+    }
+
+    @media screen and (min-width: 500px) {
+        .container {
+            margin-left: 50%;
+            transform: translateX(-50%);
+            width: 1100px;
+            display: flex;
+            justify-content: center;
+            align-content: center;
+        }
+
+        .container > .main {
+            width: 30%;
+            display: flex;
+            flex-flow: column nowrap;
+        }
+
+        .container > .main > .column {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-primary {
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.42857143;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 4px;
+            color: #fff;
+            background-color: #717FF9;
+            border: 0;
+        }
+
+        .btn-primary:hover {
+            background-color: #f57c00;
+        }
+
+        .i {
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+        }
+        span{
+            font-family: inherit;
+            font-weight: 500;
+            line-height: 1.1;
+            color: inherit;
+        }
+    }
+</style>
 <body>
-<div >
-    姓：<input type="text" name="first" id="in1">
-    姓名长度：<input type="text" name="number" id="in2">
-    生多少个：<input type="text" name="alln" id="in3">
-    <input type="button" value="提交" onclick="submit()">
+<div class="container">
+    <div class="main">
+        <div class="column">
+            <span>姓：</span><input type="text" class="i" name="first" id="in1">
+        </div>
+        <div class="column">
+            <span>姓名长度：</span><input type="text" class="i" name="number" id="in2" maxlength="1" placeholder="最多支持4位">
+        </div>
+        <div class="column">
+            <span>生多少个：</span><input type="text" class="i" name="alln" id="in3">
+        </div>
+        <div class="column">
+            <input type="button" class="btn-primary" value="提交" onclick="submit()">
+        </div>
+    </div>
+
 </div>
 </body>
 </html>
@@ -18,24 +103,26 @@
         let in1 = document.getElementById("in1").value;
         let in2 = document.getElementById("in2").value;
         let in3 = document.getElementById("in3").value;
-        Request.post("/newname",{first:in1,number:in2,alln:in3}).then((e)=>{
+        Request.post("/newname", {first: in1, number: in2, alln: in3}).then((e) => {
             console.log(e);
             window.open(e);
         })
     }
+
     class Request {
         static _root = "";
-        static get(url,data){
+
+        static get(url, data) {
             let t = this;
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
                 let XHR = new XMLHttpRequest();
-                let u = t._root+url+"?";
-                for (let i in data){
-                    u+=`${i}=${data[i]}`;
+                let u = t._root + url + "?";
+                for (let i in data) {
+                    u += `${i}=${data[i]}`;
                 }
                 XHR.open('GET', u, true);
-                XHR.setRequestHeader("Content-Type","application/json");
-                XHR.onreadystatechange = function() {
+                XHR.setRequestHeader("Content-Type", "application/json");
+                XHR.onreadystatechange = function () {
                     if (XHR.readyState === 4) {
                         if (XHR.status === 200) {
                             try {
@@ -52,17 +139,18 @@
                 XHR.send(data);
             })
         }
-        static post(url,data){
+
+        static post(url, data) {
             let t = this;
-            return new Promise(function(resolve, reject) {
+            return new Promise(function (resolve, reject) {
                 let XHR = new XMLHttpRequest();
                 // let u = t._root+url+"?";
                 // for (let i in data){
                 //     u+=`${i}=${data[i]}`;
                 // }
                 XHR.open('POST', url, true);
-                XHR.setRequestHeader("Content-Type","application/json");
-                XHR.onreadystatechange = function() {
+                XHR.setRequestHeader("Content-Type", "application/json");
+                XHR.onreadystatechange = function () {
                     if (XHR.readyState === 4) {
                         if (XHR.status === 200) {
                             try {

@@ -48,7 +48,7 @@ func main() {
 		var m strings.Builder
 		n, _ := strconv.Atoi(number)
 		na, _ := strconv.Atoi(alln)
-		for i := 1; i < na; i++ {
+		for i := 1; i < na+1; i++ {
 			ss := GetRandomName(n, first)
 			if i%10 != 0 {
 				m.WriteString(ss + "\t")
@@ -56,11 +56,11 @@ func main() {
 				m.WriteString(ss + "\n")
 			}
 		}
-		tm := strconv.Itoa(int(time.Now().Unix())+rand.Int())
+		tm := strconv.Itoa(int(time.Now().Unix()) + rand.Int())
 		WriteStringToFileS("./static/temp/"+tm+"-name.txt", m.String())
-		err:=Zip("./static/temp/"+tm+"-name.txt","./static/temp/"+tm+"-name.zip")
-		if err !=nil {
-		    log.Println(err)
+		err := Zip("./static/temp/"+tm+"-name.txt", "./static/temp/"+tm+"-name.zip")
+		if err != nil {
+			log.Println(err)
 		}
 		writer.Header().Set("content-type", "application/x-zip-compressed")
 		//writer.Header().Set("Content-Disposition","attachment; filename="+tm+"-name.txt")
@@ -85,7 +85,7 @@ func Zip(srcFile string, destZip string) error {
 		if err != nil {
 			return err
 		}
-		header.Name = strings.TrimPrefix(path, filepath.Dir(srcFile) + "/")
+		header.Name = strings.TrimPrefix(path, filepath.Dir(srcFile)+"/")
 		// header.Name = path
 		if info.IsDir() {
 			header.Name += "/"
@@ -98,7 +98,7 @@ func Zip(srcFile string, destZip string) error {
 			return err
 		}
 
-		if ! info.IsDir() {
+		if !info.IsDir() {
 			file, err := os.Open(path)
 			if err != nil {
 				return err
@@ -111,6 +111,7 @@ func Zip(srcFile string, destZip string) error {
 
 	return err
 }
+
 var (
 	familyNames    = []string{"周"}
 	middleNamesMap = map[string][]string{}
