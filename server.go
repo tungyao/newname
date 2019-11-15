@@ -4,6 +4,8 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
+	"github.com/tungyao/cedar"
+	"github.com/tungyao/tjson"
 	"io"
 	"io/ioutil"
 	"log"
@@ -12,8 +14,6 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
-	cedar "src/github.com/tungyao/cedar"
-	"src/github.com/tungyao/tjson"
 	"strconv"
 	"strings"
 	"sync"
@@ -64,7 +64,7 @@ func main() {
 		}
 		writer.Header().Set("content-type", "application/x-zip-compressed")
 		//writer.Header().Set("Content-Disposition","attachment; filename="+tm+"-name.txt")
-		_, _ = writer.Write([]byte("./static/temp/" + tm + "-name.zip"))
+		_, _ = writer.Write([]byte("./newnames/static/temp/" + tm + "-name.zip"))
 	})
 	_ = r.Listening(":84", r)
 }

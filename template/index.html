@@ -8,6 +8,20 @@
     <title>新名字（源自古诗词）</title>
 </head>
 <style>
+    .btn-download {
+        margin-top: 30px;
+        padding: 6px 12px;
+        margin-bottom: 0;
+        font-size: 14px;
+        font-weight: normal;
+        line-height: 1.42857143;
+        text-align: center;
+        cursor: pointer;
+        border-radius: 4px;
+        color: #fff;
+        background-color: orange;
+        border: 0;
+    }
     @media screen and (max-width: 500px) {
         .container {
             width: 100%;
@@ -41,7 +55,6 @@
             background-color: #717FF9;
             border: 0;
         }
-
         .btn-primary:hover {
             background-color: #f57c00;
         }
@@ -121,6 +134,10 @@
             color: inherit;
         }
     }
+    .hide{
+        height: 0;
+        overflow: hidden;
+    }
 </style>
 <body>
 <div class="container">
@@ -137,6 +154,9 @@
         <div class="column">
             <input type="button" class="btn-primary" value="提交" onclick="submit()">
         </div>
+        <div class="column hide" id="downloads">
+            <a  style="width: 100%" id="download" download="">点击下载</a>
+        </div>
     </div>
 
 </div>
@@ -149,7 +169,9 @@
         let in3 = document.getElementById("in3").value;
         Request.post("/newname", {first: in1, number: in2, alln: in3}).then((e) => {
             console.log(e);
-            window.open(e);
+
+            document.getElementById("downloads").className="btn-download"
+            document.getElementById("download").href = e;
         })
     }
 
