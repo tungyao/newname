@@ -11,12 +11,56 @@
     @media screen and (max-width: 500px) {
         .container {
             width: 100%;
+            display: flex;
+            align-content: center;
+            justify-content: center;
         }
 
         .container > .main {
-            /*width: 100%;*/
+            width: 80%;
             display: flex;
             flex-flow: column nowrap;
+        }
+        .container > .main > .column {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 6px 12px;
+            margin-bottom: 0;
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.42857143;
+            text-align: center;
+            cursor: pointer;
+            border-radius: 4px;
+            color: #fff;
+            background-color: #717FF9;
+            border: 0;
+        }
+
+        .btn-primary:hover {
+            background-color: #f57c00;
+        }
+
+        .i {
+            height: 34px;
+            padding: 6px 12px;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+        }
+        span{
+            font-family: inherit;
+            font-weight: 500;
+            line-height: 1.1;
+            color: inherit;
         }
     }
 
