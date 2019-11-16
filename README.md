@@ -9,6 +9,11 @@
     \|__| \|__|\|_______|\|____________|\|__| \|__|\|__|\|__|\|__|     \|__|\|_______|
 
 ```
+# 2.0重大更新
+## *[上线网站,点击直达](https://yaop.ink/newnames)* ,网站可以随时生成名字，并且下载。
+## https://yaop.ink/newnames
+---
+# 1.0更新
 ## [wiki说明](https://github.com/tungyao/newname/wiki)
 # 不要用windows自带的编辑器
 ## 功能说明
