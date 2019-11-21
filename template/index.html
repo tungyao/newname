@@ -1,237 +1,103 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>新名字（源自古诗词）</title>
 </head>
 <style>
-    .btn-download {
-        margin-top: 30px;
-        padding: 6px 12px;
-        margin-bottom: 0;
-        font-size: 14px;
-        font-weight: normal;
-        line-height: 1.42857143;
-        text-align: center;
-        cursor: pointer;
-        border-radius: 4px;
-        color: #fff;
-        background-color: orange;
-        border: 0;
-    }
-    @media screen and (max-width: 500px) {
-        .container {
-            width: 100%;
-            display: flex;
-            align-content: center;
-            justify-content: center;
-        }
-
-        .container > .main {
-            width: 80%;
-            display: flex;
-            flex-flow: column nowrap;
-        }
-        .container > .main > .column {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .btn-primary {
-            width: 100%;
-            padding: 6px 12px;
-            margin-bottom: 0;
-            font-size: 14px;
-            font-weight: normal;
-            line-height: 1.42857143;
-            text-align: center;
-            cursor: pointer;
-            border-radius: 4px;
-            color: #fff;
-            background-color: #717FF9;
-            border: 0;
-        }
-        .btn-primary:hover {
-            background-color: #f57c00;
-        }
-
-        .i {
-            height: 34px;
-            padding: 6px 12px;
-            font-size: 14px;
-            line-height: 1.42857143;
-            color: #555;
-            background-color: #fff;
-            background-image: none;
-            border: 1px solid #ccc;
-        }
-        span{
-            font-family: inherit;
-            font-weight: 500;
-            line-height: 1.1;
-            color: inherit;
-        }
-    }
-
-    @media screen and (min-width: 500px) {
-        .container {
-            margin-left: 50%;
-            transform: translateX(-50%);
-            width: 1100px;
-            display: flex;
-            justify-content: center;
-            align-content: center;
-        }
-
-        .container > .main {
-            width: 30%;
-            display: flex;
-            flex-flow: column nowrap;
-        }
-
-        .container > .main > .column {
-            margin-top: 20px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .btn-primary {
-            padding: 6px 12px;
-            margin-bottom: 0;
-            font-size: 14px;
-            font-weight: normal;
-            line-height: 1.42857143;
-            text-align: center;
-            cursor: pointer;
-            border-radius: 4px;
-            color: #fff;
-            background-color: #717FF9;
-            border: 0;
-        }
-
-        .btn-primary:hover {
-            background-color: #f57c00;
-        }
-
-        .i {
-            height: 34px;
-            padding: 6px 12px;
-            font-size: 14px;
-            line-height: 1.42857143;
-            color: #555;
-            background-color: #fff;
-            background-image: none;
-            border: 1px solid #ccc;
-        }
-        span{
-            font-family: inherit;
-            font-weight: 500;
-            line-height: 1.1;
-            color: inherit;
-        }
-    }
-    .hide{
-        height: 0;
-        overflow: hidden;
-    }
+    .btn-download{margin-top:30px;padding:6px 12px;margin-bottom:0;font-size:14px;font-weight:400;line-height:1.42857143;text-align:center;cursor:pointer;border-radius:4px;color:#fff;background-color:orange;border:0}@media screen and (max-width:500px){.container{width:100%;display:flex;align-content:center;justify-content:center}.container>.main{width:80%;display:flex;flex-flow:column nowrap}.container>.main>.column{margin-top:20px;display:flex;justify-content:space-between}.btn-primary{width:100%;padding:6px 12px;margin-bottom:0;font-size:14px;font-weight:400;line-height:1.42857143;text-align:center;cursor:pointer;border-radius:4px;color:#fff;background-color:#717ff9;border:0}.btn-primary:hover{background-color:#f57c00}.i{height:34px;padding:6px 12px;font-size:14px;line-height:1.42857143;color:#555;background-color:#fff;background-image:none;border:1px solid #ccc}span{font-family:inherit;font-weight:500;line-height:1.1;color:inherit}}@media screen and (min-width:500px){.container{margin-left:50%;transform:translateX(-50%);width:1100px;display:flex;justify-content:center;align-content:center}.container>.main{width:30%;display:flex;flex-flow:column nowrap}.container>.main>.column{margin-top:20px;display:flex;justify-content:space-between}.btn-primary{padding:6px 12px;margin-bottom:0;font-size:14px;font-weight:400;line-height:1.42857143;text-align:center;cursor:pointer;border-radius:4px;color:#fff;background-color:#717ff9;border:0}.btn-primary:hover{background-color:#f57c00}.i{height:34px;padding:6px 12px;font-size:14px;line-height:1.42857143;color:#555;background-color:#fff;background-image:none;border:1px solid #ccc}span{font-family:inherit;font-weight:500;line-height:1.1;color:inherit}}.hide{height:0;overflow:hidden}.model{position:absolute;top:0;margin-left:50%;transform:translateX(-50%);z-index:999;width:50%;height:50px;background-color:#555;color:wheat;border-radius:40px;margin-top:-50px;line-height:20px}.ani{animation:movein 3s forwards ease-in-out}@keyframes movein{0%{margin-top:-50px}30%{margin-top:20px}80%{margin-top:20px}100%{margin-top:-50px}}
 </style>
-<body>
-<div class="container">
-    <div class="main">
-        <div class="column">
-            <span>姓：</span><input type="text" class="i" name="first" id="in1">
-        </div>
-        <div class="column">
-            <span>姓名长度：</span><input type="text" class="i" name="number" id="in2" maxlength="1" placeholder="最多支持4位">
-        </div>
-        <div class="column">
-            <span>生多少个：</span><input type="text" class="i" name="alln" id="in3">
-        </div>
-        <div class="column">
-            <input type="button" class="btn-primary" value="提交" onclick="submit()">
-        </div>
-        <div class="column hide" id="downloads">
-            <a  style="width: 100%" id="download" download="">点击下载</a>
-        </div>
-    </div>
 
-</div>
+<body>
+    <div id="msg"></div>
+    <div class="container">
+        <div class="main">
+            <div class="column">
+                <span>姓：</span><input type="text" class="i" name="first" id="in1">
+            </div>
+            <div class="column">
+                <span>姓名长度：</span><input type="number" class="i" name="number" id="in2" maxlength="1"
+                    placeholder="最多支持4位" max="4">
+            </div>
+            <div class="column">
+                <span>生成多少个：</span><input type="number" class="i" name="alln" id="in3" placeholder="每次最多20000个"
+                    max="20000">
+            </div>
+            <div class="column">
+                <button class="btn-primary" id="clickto" onclick="submit()">提交</button>
+            </div>
+            <div class="column hide" id="downloads">
+                <a style="width: 100%" id="download">点击下载</a>
+                <input type="text" id="trueurl">
+            </div>
+        </div>
+
+    </div>
+    <footer style="position: absolute;bottom: 30px;text-align: center;width: 90%;color:#555555;font-size: 10pt">
+        <span>名字组合全部来自于中国古代诗词，并且已经剔除了敏感词汇，碰运气吧
+        </span>
+        <a href="mailto:1922527051@qq.com">遇到问题可以联系我</a>
+        <a href="github.com/tungyao/newname">开源至GITHUB</a>
+    </footer>
 </body>
-</html>
 <script>
     function submit() {
         let in1 = document.getElementById("in1").value;
         let in2 = document.getElementById("in2").value;
         let in3 = document.getElementById("in3").value;
-        Request.post("/newname", {first: in1, number: in2, alln: in3}).then((e) => {
-            console.log(e);
-
-            document.getElementById("downloads").className="btn-download"
+        let boot = document.getElementById("msg");
+        if (in1.length === 0 || in1.length > 2 || in1 === "") {
+            show("姓名不能为空或者超过2");
+            return;
+        }
+        if (in2 > 4) {
+            show("姓名长度不能超过4位");return;
+        }
+        if (in3 > 20000) {
+            show("每次生成个数不能超过20000个");return;
+        }
+        post("/newname", { first: in1, number: in2, alln: in3 }).then((e) => {
+            let n = document.getElementById("downloads");
+            n.className = "btn-download";
             document.getElementById("download").href = e;
+            document.getElementById("trueurl").value = "https://www.yaop.ink/newnames"+e.substr(1);
         })
     }
-
-    class Request {
-        static _root = "/newnames";
-
-        static get(url, data) {
-            let t = this;
-            return new Promise(function (resolve, reject) {
-                let XHR = new XMLHttpRequest();
-                let u = t._root + url + "?";
-                for (let i in data) {
-                    u += `${i}=${data[i]}`;
+    function show(msg) {
+        let node = document.getElementById("msg");
+        let div = document.createElement("div");
+        let p = document.createElement("p");
+        div.className = "model ani";
+        p.style.textAlign = "center";
+        p.innerText = msg;
+        div.appendChild(p);
+        node.appendChild(div);
+    }
+    function post(url, data) {
+        return new Promise(function (resolve, reject) {
+            let XHR = new XMLHttpRequest();
+            XHR.open('POST', "/newnames" + url, true);
+            XHR.setRequestHeader("Content-Type", "application/json");
+            XHR.onreadystatechange = function () {
+                if (XHR.readyState === 4) {
+                    if (XHR.status === 200) {
+                        try {
+                            resolve(XHR.responseText);
+                        } catch (e) {
+                            reject(e);
+                        }
+                    } else {
+                        reject(new Error(XHR.statusText));
+                    }
                 }
-                XHR.open('GET', u, true);
-                XHR.setRequestHeader("Content-Type", "application/json");
-                XHR.onreadystatechange = function () {
-                    if (XHR.readyState === 4) {
-                        if (XHR.status === 200) {
-                            try {
-                                let response = JSON.parse(XHR.responseText);
-                                resolve(response);
-                            } catch (e) {
-                                reject(e);
-                            }
-                        } else {
-                            reject(new Error(XHR.statusText));
-                        }
-                    }
-                };
-                XHR.send(data);
-            })
-        }
-
-        static post(url, data) {
-            let t = this;
-            return new Promise(function (resolve, reject) {
-                let XHR = new XMLHttpRequest();
-                // let u = t._root+url+"?";
-                // for (let i in data){
-                //     u+=`${i}=${data[i]}`;
-                // }
-                XHR.open('POST', t._root+url, true);
-                XHR.setRequestHeader("Content-Type", "application/json");
-                XHR.onreadystatechange = function () {
-                    if (XHR.readyState === 4) {
-                        if (XHR.status === 200) {
-                            try {
-                                // let response = JSON.parse(XHR.responseText);
-                                resolve(XHR.responseText);
-                            } catch (e) {
-                                reject(e);
-                            }
-                        } else {
-                            reject(new Error(XHR.statusText));
-                        }
-                    }
-                };
-                XHR.send(JSON.stringify(data));
-            })
-        }
+            };
+            XHR.send(JSON.stringify(data));
+        })
     }
 </script>
+
+</html>
