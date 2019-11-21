@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>新名字（源自古诗词）</title>
 </head>
@@ -13,36 +13,37 @@
 </style>
 
 <body>
-    <div id="msg"></div>
-    <div class="container">
-        <div class="main">
-            <div class="column">
-                <span>姓：</span><input type="text" class="i" name="first" id="in1">
-            </div>
-            <div class="column">
-                <span>姓名长度：</span><input type="number" class="i" name="number" id="in2" maxlength="1"
-                    placeholder="最多支持4位" max="4">
-            </div>
-            <div class="column">
-                <span>生成多少个：</span><input type="number" class="i" name="alln" id="in3" placeholder="每次最多20000个"
-                    max="20000">
-            </div>
-            <div class="column">
-                <button class="btn-primary" id="clickto" onclick="submit()">提交</button>
-            </div>
-            <div class="column hide" id="downloads">
-                <a style="width: 100%" id="download">点击下载</a>
-                <input type="text" id="trueurl">
-            </div>
+<div id="msg"></div>
+<div class="container">
+    <div class="main">
+        <div class="column">
+            <span>姓：</span><input type="text" class="i" name="first" id="in1">
         </div>
-
+        <div class="column">
+            <span>姓名长度：</span><input type="number" class="i" name="number" id="in2" maxlength="1"
+                                     placeholder="最多支持4位" max="4">
+        </div>
+        <div class="column">
+            <span>生成多少个：</span><input type="number" class="i" name="alln" id="in3" placeholder="每次最多20000个"
+                                      max="20000">
+        </div>
+        <div class="column">
+            <button class="btn-primary" id="clickto" onclick="submit()">提交</button>
+        </div>
+        <div class="column hide" id="downloads">
+            <a style="width: 100%" id="download">点击下载</a>
+            <input type="text" id="trueurl">
+        </div>
     </div>
-    <footer style="position: absolute;bottom: 30px;text-align: center;width: 90%;color:#555555;font-size: 10pt">
+
+</div>
+<footer style="position: absolute;bottom: 30px;text-align: center;width: 90%;color:#555555;font-size: 10pt">
         <span>名字组合全部来自于中国古代诗词，并且已经剔除了敏感词汇，碰运气吧
         </span>
-        <a href="mailto:1922527051@qq.com">遇到问题可以联系我</a><br>
-        <a href="https://github.com/tungyao/newname">开源至GITHUB</a>
-    </footer>
+    <a href="mailto:1922527051@qq.com">遇到问题可以联系我</a>
+    <br>
+    <a href="https://github.com/tungyao/newname">开源来自GitHub</a>
+</footer>
 </body>
 <script>
     function submit() {
@@ -99,5 +100,4 @@
         })
     }
 </script>
-
 </html>
