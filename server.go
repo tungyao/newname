@@ -34,6 +34,38 @@ func main() {
 		}
 		_, _ = writer.Write(html)
 	})
+	r.Post("/newnamedesk", func(writer http.ResponseWriter, request *http.Request) {
+		data := make([]byte, 1024)
+		nt, _ := request.Body.Read(data)
+		request.Body.Close()
+		t := tjson.Decode(data[:nt])
+		first := t["first"].(string)
+		number := t["number"].(string)
+		alln := "2000"
+		if len(t) > 2 {
+			alln = t["alln"].(string)
+		}
+		var m strings.Builder
+		n, _ := strconv.Atoi(number)
+		na, _ := strconv.Atoi(alln)
+		for i := 1; i < na+1; i++ {
+			ss := GetRandomName(n, first)
+			if i%10 != 0 {
+				m.WriteString(ss + "\t")
+			} else {
+				m.WriteString(ss + "\n")
+			}
+		}
+		tm := strconv.Itoa(int(time.Now().Unix()) + rand.Int())
+		WriteStringToFileS("./static/temp/"+tm+"-name.txt", m.String())
+		err := Zip("./static/temp/"+tm+"-name.txt", "./static/temp/"+tm+"-name.zip")
+		if err != nil {
+			log.Println(err)
+		}
+		writer.Header().Set("content-type", "application/x-zip-compressed")
+		//writer.Header().Set("Content-Disposition","attachment; filename="+tm+"-name.txt")
+		_, _ = writer.Write([]byte("./static/temp/" + tm + "-name.zip"))
+	})
 	r.Post("/newname", func(writer http.ResponseWriter, request *http.Request) {
 		data := make([]byte, 1024)
 		nt, _ := request.Body.Read(data)
