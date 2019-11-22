@@ -9,6 +9,10 @@
     \|__| \|__|\|_______|\|____________|\|__| \|__|\|__|\|__|\|__|     \|__|\|_______|
 
 ```
+# 2.1增量更新
+## 利用Electron将网页端移植到桌面端
+### [Github下载](https://github.com/tungyao/newname/releases/download/1.1/setup.exe)
+### [Gitee下载(国内)](https://gitee.com/yaop/newname/releases/download/1.1/setup.exe)
 # 2.0重大更新
 ## *[上线网站,点击直达](https://yaop.ink/newnames)* ,网站可以随时生成名字，并且下载。
 ## https://yaop.ink/newnames
