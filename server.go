@@ -22,8 +22,7 @@ import (
 
 func main() {
 	r := cedar.NewRouter()
-	r.Static("/static")
-	r.Get("/", func(writer http.ResponseWriter, request *http.Request) {
+	r.Get("/", func(writer http.ResponseWriter, request *http.Request, core *cedar.Core) {
 		fs, err := os.OpenFile("./template/index.html", os.O_RDONLY, 0777)
 		if err != nil {
 			log.Println(err)
@@ -34,11 +33,11 @@ func main() {
 		}
 		_, _ = writer.Write(html)
 	})
-	r.Post("/newnamedesk", func(writer http.ResponseWriter, request *http.Request) {
+	r.Post("/newnamedesk", func(writer http.ResponseWriter, request *http.Request, core *cedar.Core) {
 		data := make([]byte, 1024)
 		nt, _ := request.Body.Read(data)
 		request.Body.Close()
-		t := tjson.Decode(data[:nt])
+		t, _ := tjson.Decode(data[:nt])
 		first := t["first"].(string)
 		number := t["number"].(string)
 		alln := "2000"
@@ -66,11 +65,11 @@ func main() {
 		//writer.Header().Set("Content-Disposition","attachment; filename="+tm+"-name.txt")
 		_, _ = writer.Write([]byte("./static/temp/" + tm + "-name.zip"))
 	})
-	r.Post("/newname", func(writer http.ResponseWriter, request *http.Request) {
+	r.Post("/newname", func(writer http.ResponseWriter, request *http.Request, core *cedar.Core) {
 		data := make([]byte, 1024)
 		nt, _ := request.Body.Read(data)
 		request.Body.Close()
-		t := tjson.Decode(data[:nt])
+		t, _ := tjson.Decode(data[:nt])
 		first := t["first"].(string)
 		number := t["number"].(string)
 		alln := "2000"
@@ -98,7 +97,7 @@ func main() {
 		//writer.Header().Set("Content-Disposition","attachment; filename="+tm+"-name.txt")
 		_, _ = writer.Write([]byte("./static/temp/" + tm + "-name.zip"))
 	})
-	_ = r.Listening(":84", r)
+	http.ListenAndServe(":84", r)
 }
 func Zip(srcFile string, destZip string) error {
 	zipfile, err := os.Create(destZip)
@@ -124,7 +123,7 @@ func Zip(srcFile string, destZip string) error {
 		} else {
 			header.Method = zip.Deflate
 		}
-
+		header.Name = filepath.Base(srcFile)
 		writer, err := archive.CreateHeader(header)
 		if err != nil {
 			return err
