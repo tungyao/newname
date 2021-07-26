@@ -1,10 +1,12 @@
-package newname
+package main
 
 import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"math/rand"
+	"os"
 	"regexp"
 	"strings"
 	"sync"
@@ -147,20 +149,26 @@ func SyncAdd(s *strings.Builder, n int, first string, alln int) {
 		}
 	}
 }
-
-//
-//func main() {
-//	flag.Parse()
-//	var m strings.Builder
-//	lock := &sync.Mutex{}
-//	var _startTime int64 = time.Now().UnixNano() / 1e6
-//	wg.Add(1)
-//	//go syncAdd(&m, lock)
-//	//go syncAdd(&m, lock)
-//	//go syncAdd(&m, lock)
-//	go syncAdd(&m, lock)
-//	wg.Wait()
-//	//fmt.Println(m.String())
-//	writeStringToFile("./name.txt", m.String())
-//	fmt.Println("总共耗时: ", time.Now().UnixNano()/1e6-_startTime, " 毫秒")
-//}
+func WriteStringToFileS(filepath, content string) {
+	fs, err := os.OpenFile(filepath, os.O_CREATE|os.O_WRONLY, 0777)
+	if err != nil {
+		log.Println(err)
+	}
+	defer fs.Close()
+	_, err = fs.WriteString(content)
+	if err != nil {
+		log.Println(err)
+	}
+}
+func main() {
+	flag.Parse()
+	var m strings.Builder
+	lock := &sync.Mutex{}
+	var _startTime int64 = time.Now().UnixNano() / 1e6
+	wg.Add(1)
+	go syncAdd(&m, lock)
+	wg.Wait()
+	//fmt.Println(m.String())
+	WriteStringToFileS("./name.txt", m.String())
+	fmt.Println("总共耗时: ", time.Now().UnixNano()/1e6-_startTime, " 毫秒")
+}

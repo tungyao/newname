@@ -4,8 +4,8 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
-	"github.com/tungyao/cedar"
 	"github.com/tungyao/tjson"
+	cedar "github.com/tungyao/ultimate-cedar"
 	"io"
 	"io/ioutil"
 	"log"
@@ -20,9 +20,17 @@ import (
 	"time"
 )
 
+func init() {
+	// 校验本地路径是否存在
+	fs, err := os.Open("./temp")
+	if os.IsNotExist(err) {
+		os.Mkdir("./temp", 755)
+	}
+	fs.Close()
+}
 func main() {
 	r := cedar.NewRouter()
-	r.Get("/", func(writer http.ResponseWriter, request *http.Request, core *cedar.Core) {
+	r.Get("/", func(writer cedar.ResponseWriter, request cedar.Request) {
 		fs, err := os.OpenFile("./template/index.html", os.O_RDONLY, 0777)
 		if err != nil {
 			log.Println(err)
@@ -33,7 +41,7 @@ func main() {
 		}
 		_, _ = writer.Write(html)
 	})
-	r.Post("/newnamedesk", func(writer http.ResponseWriter, request *http.Request, core *cedar.Core) {
+	r.Post("/newnamedesk", func(writer cedar.ResponseWriter, request cedar.Request) {
 		data := make([]byte, 1024)
 		nt, _ := request.Body.Read(data)
 		request.Body.Close()
@@ -65,7 +73,7 @@ func main() {
 		//writer.Header().Set("Content-Disposition","attachment; filename="+tm+"-name.txt")
 		_, _ = writer.Write([]byte("./static/temp/" + tm + "-name.zip"))
 	})
-	r.Post("/newname", func(writer http.ResponseWriter, request *http.Request, core *cedar.Core) {
+	r.Post("/newname", func(writer cedar.ResponseWriter, request cedar.Request) {
 		data := make([]byte, 1024)
 		nt, _ := request.Body.Read(data)
 		request.Body.Close()
@@ -88,16 +96,26 @@ func main() {
 			}
 		}
 		tm := strconv.Itoa(int(time.Now().Unix()) + rand.Int())
-		WriteStringToFileS("./static/temp/"+tm+"-name.txt", m.String())
-		err := Zip("./static/temp/"+tm+"-name.txt", "./static/temp/"+tm+"-name.zip")
+		WriteStringToFileS("./temp/"+tm+"-name.txt", m.String())
+		err := Zip("./temp/"+tm+"-name.txt", "./temp/"+tm+"-name.zip")
 		if err != nil {
 			log.Println(err)
 		}
 		writer.Header().Set("content-type", "application/x-zip-compressed")
 		//writer.Header().Set("Content-Disposition","attachment; filename="+tm+"-name.txt")
-		_, _ = writer.Write([]byte("./static/temp/" + tm + "-name.zip"))
+		_, _ = writer.Write([]byte("./temp/" + tm + "-name.zip"))
 	})
-	http.ListenAndServe(":84", r)
+	r.Get("/temp/:name", func(writer cedar.ResponseWriter, request cedar.Request) {
+		f, err := os.Open("./temp/" + request.Data.Get("name"))
+		if err != nil {
+			log.Println(err)
+			writer.WriteHeader(http.StatusNotFound)
+			return
+		}
+		defer f.Close()
+		io.Copy(writer, f)
+	})
+	http.ListenAndServe(":8400", r)
 }
 func Zip(srcFile string, destZip string) error {
 	zipfile, err := os.Create(destZip)
