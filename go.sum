@@ -15,5 +15,5 @@ github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/tungyao/tjson v0.0.9 h1:fLQPaZa0o7sKuyW8Zp6HFgtWul+wE07+hQ8t8/cOew0=
 github.com/tungyao/tjson v0.0.9/go.mod h1:2321+vWKKJrvq//wh/ZxZC4dr6bxPoTT2jEAJL2qg/Q=
-github.com/tungyao/ultimate-cedar v1.0.0 h1:s9tFvZ3XwKdXTh2IIWBmX1teKqmsGrWQA7wZmYpAJVQ=
-github.com/tungyao/ultimate-cedar v1.0.0/go.mod h1:W1oKrCXpUq3WF3eLafGqSpY9VS7pZh07nGvR9iaJxSk=
+github.com/tungyao/ultimate-cedar v1.0.1 h1:EPKIG7Eeqc5SbXRiI7EQJXRNa+kJvzqbyYF0nOLPzSU=
+github.com/tungyao/ultimate-cedar v1.0.1/go.mod h1:FeuA0txVlFkAVd+chQHijWCdZLOnM4TVpsxq6NAEiGw=

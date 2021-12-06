@@ -4,8 +4,6 @@ import (
 	"archive/zip"
 	"flag"
 	"fmt"
-	"github.com/tungyao/tjson"
-	cedar "github.com/tungyao/ultimate-cedar"
 	"io"
 	"io/ioutil"
 	"log"
@@ -18,6 +16,9 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/tungyao/tjson"
+	cedar "github.com/tungyao/ultimate-cedar"
 )
 
 func init() {
@@ -31,7 +32,7 @@ func init() {
 func main() {
 	r := cedar.NewRouter()
 	r.Get("/", func(writer cedar.ResponseWriter, request cedar.Request) {
-		fs, err := os.OpenFile("./template/index.html", os.O_RDONLY, 0777)
+		fs, err := os.OpenFile("../template/index.html", os.O_RDONLY, 0777)
 		if err != nil {
 			log.Println(err)
 		}
@@ -41,7 +42,7 @@ func main() {
 		}
 		_, _ = writer.Write(html)
 	})
-	r.Post("/newnamedesk", func(writer cedar.ResponseWriter, request cedar.Request) {
+	r.Post("newnamedesk", func(writer cedar.ResponseWriter, request cedar.Request) {
 		data := make([]byte, 1024)
 		nt, _ := request.Body.Read(data)
 		request.Body.Close()
@@ -70,10 +71,9 @@ func main() {
 			log.Println(err)
 		}
 		writer.Header().Set("content-type", "application/x-zip-compressed")
-		//writer.Header().Set("Content-Disposition","attachment; filename="+tm+"-name.txt")
 		_, _ = writer.Write([]byte("./static/temp/" + tm + "-name.zip"))
 	})
-	r.Post("/newname", func(writer cedar.ResponseWriter, request cedar.Request) {
+	r.Post("newname", func(writer cedar.ResponseWriter, request cedar.Request) {
 		data := make([]byte, 1024)
 		nt, _ := request.Body.Read(data)
 		request.Body.Close()
@@ -102,10 +102,9 @@ func main() {
 			log.Println(err)
 		}
 		writer.Header().Set("content-type", "application/x-zip-compressed")
-		//writer.Header().Set("Content-Disposition","attachment; filename="+tm+"-name.txt")
-		_, _ = writer.Write([]byte("./temp/" + tm + "-name.zip"))
+		_, _ = writer.Write([]byte("./temp/" + tm))
 	})
-	r.Get("/temp/:name", func(writer cedar.ResponseWriter, request cedar.Request) {
+	r.Get("temp/:name", func(writer cedar.ResponseWriter, request cedar.Request) {
 		f, err := os.Open("./temp/" + request.Data.Get("name"))
 		if err != nil {
 			log.Println(err)
@@ -114,6 +113,20 @@ func main() {
 		}
 		defer f.Close()
 		io.Copy(writer, f)
+	})
+	// 在线查看
+	// https://newname.tungyao.com/temp/8674665224710888359-name.zip
+	r.Get("look/:name", func(writer cedar.ResponseWriter, request cedar.Request) {
+		f, err := os.Open("./temp/" + request.Data.Get("name") + "-name.txt")
+		if err != nil {
+			log.Println(err)
+			writer.WriteHeader(http.StatusNotFound)
+			return
+		}
+		defer f.Close()
+		d, err := io.ReadAll(f)
+		writer.Header().Set("content-type", "text/html")
+		writer.Write([]byte("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Look</title></head><body><div style='max-width:1108px;margin:auto;font-size:x-large;'>" + string(d) + "</div></body></html>"))
 	})
 	http.ListenAndServe(":8400", r)
 }
@@ -165,7 +178,7 @@ var (
 	familyNames    = []string{"周"}
 	middleNamesMap = map[string][]string{}
 
-	//定义一堆名字
+	// 定义一堆名字
 	names = "纤云弄巧飞星传恨银迢迢暗风玉露一相逢胜间无数饮醒复家息雷应倚杖听江声长此何时忘却营阑风静纹平小舟从此逝江海寄余生梦" +
 		"后楼台高锁帘幕年春恨却时落花立微雨双生若只如初见何事秋风画胜寻芳泗水滨无边光景一时新等闲识得风千春江潮水连海平海明月共潮生随波千" +
 		"万里何处春江无月明江流宛转绕芳甸月照花林皆似霰空里流霜觉飞汀白沙看见江天一色无纤尘皎皎空中孤月轮江畔何初见月江月何年初照生代" +
@@ -207,11 +220,14 @@ func GetRandomName(n int, first string) string {
 	return s
 }
 func init() {
-	data, err := ioutil.ReadFile("./shici.txt")
+	data, err := ioutil.ReadFile("../shici.txt")
 	var get string
 	if err != nil {
 		fmt.Println("File reading error", err)
-		for _, s := range names {
+		get = string(data)
+		reg := regexp.MustCompile(`\s*\pP*`)
+		get = reg.ReplaceAllString(get, "")
+		for _, s := range get {
 			lastNames = append(lastNames, string(s))
 		}
 
@@ -223,35 +239,27 @@ func init() {
 			lastNames = append(lastNames, string(s))
 		}
 	}
+	fmt.Println(lastNames)
 	for _, x := range familyNames {
 		middleNamesMap[x] = []string{"德", "惟", "守", "世", "令", "子", "伯", "师", "希", "与", "孟", "由", "宜", "顺", "元", "允", "宗", "仲", "士", "不", "善", "汝", "崇", "必", "良", "友", "季", "同"}
 	}
 }
 
 var (
-	//随机数互斥锁（确保GetRandomInt不能被并发访问）
+	// 随机数互斥锁（确保GetRandomInt不能被并发访问）
 	randomMutex sync.Mutex
 )
 
-/*获取[start,end]之间的随机数*/
 func GetRandomInt(start, end int) int {
-	//访问加同步锁，是因为并发访问时容易因为时间种子相同而生成相同的随机数，那就狠不随机鸟！
 	randomMutex.Lock()
-
-	//利用定时器阻塞1纳秒，保证时间种子得以更改
 	<-time.After(1 * time.Nanosecond)
-
-	//根据时间纳秒（种子）生成随机数对象
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	//得到[start,end]之间的随机数
 	n := start + r.Intn(end-start+1)
-
-	//释放同步锁，供其它协程调用
 	randomMutex.Unlock()
 	return n
 }
 
-//定义cmd参数
+// 定义cmd参数
 var (
 	numberFlag    = flag.Int("number", 100, "需要名字个数 : -number")
 	lengthFlag    = flag.Int("length", 3, "需要名字长度 : -length")
