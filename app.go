@@ -14,6 +14,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -125,9 +126,14 @@ func main() {
 		writer.Header().Set("content-type", "text/html")
 		writer.Write([]byte("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Look</title></head><body><div style='max-width:1108px;margin:auto;font-size:x-large;'>" + string(d) + "</div></body></html>"))
 	})
+	go func() {
+		<-time.After(time.Second * 1)
+		exec.Command("explorer.exe", fmt.Sprintf("http://localhost:%d", port)).Start()
+	}()
 	goto start
 start:
 	log.Printf("正在使用端口: %d\n", port)
+	log.Printf("浏览器打开: http://localhost:%d\n", port)
 	err := http.ListenAndServe(fmt.Sprintf(":%d", port), r)
 	if err != nil {
 		port, err = GetFreePort()
