@@ -14,7 +14,6 @@ import (
 	"net"
 	"net/http"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strconv"
@@ -42,7 +41,7 @@ type Data struct {
 
 func init() {
 	flag.IntVar(&port, "port", 80, "浏览器访问的端口")
-	flag.StringVar(&file, "file", "", "额外的诗词文本的路径")
+	flag.StringVar(&file, "file", "./shici.txt", "额外的诗词文本的路径")
 	flag.Parse()
 
 	// 处理额外的诗词文件
@@ -126,10 +125,6 @@ func main() {
 		writer.Header().Set("content-type", "text/html")
 		writer.Write([]byte("<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"UTF-8\"><title>Look</title></head><body><div style='max-width:1108px;margin:auto;font-size:x-large;'>" + string(d) + "</div></body></html>"))
 	})
-	go func() {
-		<-time.After(time.Second * 1)
-		exec.Command("explorer.exe", fmt.Sprintf("http://localhost:%d", port)).Start()
-	}()
 	goto start
 start:
 	log.Printf("正在使用端口: %d\n", port)
@@ -222,11 +217,7 @@ func Zip(srcFile string, destZip string) error {
 var randomMutex sync.Mutex
 
 func GetRandomInt(start, end int) int {
-	randomMutex.Lock()
-	<-time.After(1 * time.Nanosecond)
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	n := start + r.Intn(end-start+1)
-	randomMutex.Unlock()
+	n := start + rand.Intn(end-start+1)
 	return n
 }
 func GetRandomName(n int, first string) string {
