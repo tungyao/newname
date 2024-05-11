@@ -243,7 +243,6 @@ func GetRandomName(n int, first string) string {
 		s += familyName + middleName + ln
 	} else if n == 2 {
 		ln := lastNames[GetRandomInt(0, len(lastNames)-1)]
-		log.Println(ln)
 		s += familyName + ln
 	} else if n == 4 {
 		ln := lastNames[GetRandomInt(0, len(lastNames)-1)]
