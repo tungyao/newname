@@ -29,8 +29,9 @@ var templateIndex []byte
 var templateLook []byte
 
 var (
-	port int
-	file string
+	port  int
+	file  string
+	clear bool
 )
 
 type Data struct {
@@ -42,8 +43,21 @@ type Data struct {
 func init() {
 	flag.IntVar(&port, "port", 80, "浏览器访问的端口")
 	flag.StringVar(&file, "file", "./shici.txt", "额外的诗词文本的路径")
+	flag.BoolVar(&clear, "clear", false, "格式化shici.txt文件")
 	flag.Parse()
-
+	if clear {
+		txt, err := os.ReadFile(file)
+		if err != nil {
+			panic(err)
+		}
+		txt = regexp.MustCompile(`\s*\pP*`).ReplaceAll(txt, []byte(""))
+		txt = regexp.MustCompile(`\pP*`).ReplaceAll(txt, []byte(""))
+		err = os.WriteFile(file, txt, os.ModePerm)
+		if err != nil {
+			panic(err)
+		}
+		os.Exit(0)
+	}
 	// 处理额外的诗词文件
 	os.Mkdir("temp", 755)
 	if file != "" {
