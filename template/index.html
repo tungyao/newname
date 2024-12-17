@@ -213,7 +213,7 @@
             number: parseInt(t),
             all_n: parseInt(n)
         }).then(function (e) {
-            document.getElementById("downloads").className = "btn-download", document.getElementById("download").href = e.substr(1) + "-name.zip", document.getElementById("trueurl").value = window.location.origin + e.substr(1) + "-name.zip"
+            document.getElementById("downloads").className = "btn-download", document.getElementById("download").href = e.substr(1) + ".txt", document.getElementById("trueurl").value = window.location.origin + e.substr(1) + ".txt"
             document.getElementById("look").href = window.location.origin + "/look" + e.substr(6)
         })
     }

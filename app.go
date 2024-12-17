@@ -97,6 +97,10 @@ func main() {
 		defer request.Body.Close()
 		data := &Data{}
 		err := json.Unmarshal(nt, data)
+		if err != nil {
+			log.Println(err)
+			return
+		}
 		var m strings.Builder
 		for i := 1; i < data.AllN+1; i++ {
 			ss := GetRandomName(data.Number, data.First)
@@ -107,12 +111,8 @@ func main() {
 			}
 		}
 		tm := strconv.Itoa(int(time.Now().Unix()) + rand.Int())
-		WriteStringToFileS("./temp/"+tm+"-name.txt", m.String())
-		err = Zip("./temp/"+tm+"-name.txt", "./temp/"+tm+"-name.zip")
-		if err != nil {
-			log.Println(err)
-		}
-		writer.Header().Set("content-type", "application/x-zip-compressed")
+		WriteStringToFileS("./temp/"+tm+".txt", m.String())
+		writer.Header().Set("content-type", "text/plain")
 		_, _ = writer.Write([]byte("./temp/" + tm))
 	})
 	r.Get("temp/:name", func(writer uc.ResponseWriter, request uc.Request) {
@@ -128,7 +128,7 @@ func main() {
 	// 在线查看
 	// https://newname.tungyao.com/temp/8674665224710888359-name.zip
 	r.Get("look/:name", func(writer uc.ResponseWriter, request uc.Request) {
-		f, err := os.Open("./temp/" + request.Data.Get("name") + "-name.txt")
+		f, err := os.Open("./temp/" + request.Data.Get("name") + ".txt")
 		if err != nil {
 			log.Println(err)
 			writer.WriteHeader(http.StatusNotFound)
